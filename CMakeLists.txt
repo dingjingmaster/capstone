@@ -48,7 +48,7 @@ endif()
 
 # to configure the options specify them in in the command line or change them in the cmake UI.
 # Don't edit the makefile!
-option(BUILD_SHARED_LIBS "Build shared library" OFF)
+option(BUILD_SHARED_LIBS "Build shared library" ON)
 option(BUILD_STATIC_LIBS "Build static library" ON)
 option(BUILD_STATIC_RUNTIME "Embed static MSVC runtime (Windows only). Always set if BUILD_SHARED_LIBS=ON" ${BUILD_SHARED_LIBS})
 option(CAPSTONE_BUILD_MACOS_THIN "Disable universal2 builds on macOS" OFF)
@@ -658,11 +658,11 @@ target_include_directories(capstone PUBLIC
 if(BUILD_STATIC_LIBS)
     add_library(capstone_static STATIC $<TARGET_OBJECTS:capstone>)
     # Use normal capstone name. Otherwise we get libcapstone_static.a
+    target_compile_options(capstone_static PUBLIC -fPIC)
     set_target_properties(capstone_static PROPERTIES OUTPUT_NAME "capstone")
     target_include_directories(capstone_static PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     )
-    target_link_libraries(capstone_static PRIVATE -fPIC)
 endif()
 
 if(BUILD_SHARED_LIBS)
@@ -677,8 +677,9 @@ if(BUILD_SHARED_LIBS)
     target_include_directories(capstone_shared PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     )
+    target_compile_options(capstone PUBLIC -fPIC)
     target_compile_definitions(capstone PUBLIC CAPSTONE_SHARED)
-    target_link_libraries(capstone_shared PRIVATE -fPIC)
+    target_compile_options(capstone_shared PUBLIC -fPIC)
 endif()
 
 if(CAPSTONE_BUILD_TESTS)
