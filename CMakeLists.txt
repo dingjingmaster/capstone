@@ -662,6 +662,7 @@ if(BUILD_STATIC_LIBS)
     target_include_directories(capstone_static PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     )
+    target_link_libraries(capstone_static PRIVATE -fPIC)
 endif()
 
 if(BUILD_SHARED_LIBS)
@@ -677,6 +678,7 @@ if(BUILD_SHARED_LIBS)
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     )
     target_compile_definitions(capstone PUBLIC CAPSTONE_SHARED)
+    target_link_libraries(capstone_shared PRIVATE -fPIC)
 endif()
 
 if(CAPSTONE_BUILD_TESTS)
